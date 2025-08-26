@@ -1,4 +1,4 @@
-# Vibrant LMS — Assessment Starter (Blank)
+# Vibrant LMS — Assessment Starter
 
 Clean scaffold with **no solutions**. Use this to complete the assessment in **ASSESSMENT.md**.
 
