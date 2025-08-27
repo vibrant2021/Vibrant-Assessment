@@ -7,8 +7,35 @@
 const express = require('express');
 const router = express.Router();
 
+// Mock lab samples data
+const mockSamples = [];
+
 router.post('/samples', (_req, res) => {
-  return res.status(501).json({ message: 'Not Implemented: POST /api/samples' });
+  const { sampleId, collectionDate, sampleType, priority } = req.body;
+
+  // Validation: check required fields
+  if (!sampleId || !collectionDate || !sampleType || !priority) {
+  return res.status(400).json({ message: 'Missing required fields' });
+}
+  // Validation: check collectionDate
+  const now = new Date();
+  const collected = new Date(collectionDate);
+  if (collected > now) {
+    return res.status(400).json({ message: 'Collection date cannot be in the future' });
+}
+
+  // Create new sample record
+  const newSample = {
+    id: mockSamples.length + 1,
+    sampleId,
+    collectionDate,
+    sampleType,
+    priority
+};
+
+mockSamples.push(newSample);
+return res.status(201).json(newSample);
 });
+
 
 module.exports = router;
