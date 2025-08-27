@@ -1,9 +1,56 @@
 import React from 'react'
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import InventoryTable from './components/InventoryTable';
+import { useTestResults, useUpdateTestStatus, TestResult } from './hooks/useTestResults';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+
+const queryClient = new QueryClient();
+
+const TestResultsTest: React.FC = () => {
+  const { data: testResults, isLoading, error, refetch } = useTestResults();
+  const updateMutation = useUpdateTestStatus();
+
+  const handleStatusUpdate = (id: string, newStatus: TestResult['status']) => {
+    updateMutation.mutate({ id, status: newStatus });
+  };
+
+  if (isLoading) return <div>Loading test results...</div>;
+  if (error)
+    return (
+      <div>
+        Error: {(error as Error).message}{' '}
+        <button onClick={() => refetch()}>Retry</button>
+      </div>
+    );
+
+  return (
+    <div style={{ border: '2px solid green', padding: '20px', margin: '20px' }}>
+      <h2>TanStack Query Test Results</h2>
+      {testResults?.map((result) => (
+        <div
+          key={result.id}
+          style={{ border: '1px solid #ccc', margin: '10px', padding: '10px' }}
+        >
+          <h3>{result.displayName}</h3>
+          <p>
+            Status: <strong>{result.status}</strong>
+          </p>
+          <div>
+            <button onClick={() => handleStatusUpdate(result.id, 'pending')}>Pending</button>
+            <button onClick={() => handleStatusUpdate(result.id, 'in-progress')}>In Progress</button>
+            <button onClick={() => handleStatusUpdate(result.id, 'completed')}>Completed</button>
+            <button onClick={() => handleStatusUpdate(result.id, 'failed')}>Failed</button>
+          </div>
+          {updateMutation.isPending && <p>Updating...</p>}
+        </div>
+      ))}
+    </div>
+  );
+};
 
 export default function App() {
   return (
+    <QueryClientProvider client={queryClient}>
     <Router>
     <div className="max-w-4xl mx-auto p-6 space-y-6">
       <h1 className="text-2xl font-semibold">Vibrant LMS — Assessment Starter</h1>
@@ -16,7 +63,7 @@ export default function App() {
 
       <section className="bg-white rounded-xl shadow p-4">
         <h2 className="text-lg font-medium">2) TanStack Query Hooks</h2>
-        <p className="text-sm text-gray-600">Implement <code>useTestResults</code> and <code>useUpdateTestStatus</code> in <code>src/hooks/useTestResults.ts</code> with optimistic updates.</p>
+        <TestResultsTest />
       </section>
 
       <section className="bg-white rounded-xl shadow p-4">
@@ -35,5 +82,6 @@ export default function App() {
       </section>
     </div>
     </Router>
+    </QueryClientProvider>
   )
 }
