@@ -1,4 +1,5 @@
 import React from 'react'
+import InventoryTable from './components/InventoryTable';
 
 export default function App() {
   return (
@@ -9,6 +10,7 @@ export default function App() {
       <section className="bg-white rounded-xl shadow p-4">
         <h2 className="text-lg font-medium">1) Inventory Table</h2>
         <p className="text-sm text-gray-600">Create <code>InventoryTable</code> in <code>src/components/InventoryTable.tsx</code> with typed props, sorting, filter/search, URL state, pagination.</p>
+        <InventoryTable />
       </section>
 
       <section className="bg-white rounded-xl shadow p-4">
