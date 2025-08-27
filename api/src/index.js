@@ -16,7 +16,7 @@ app.use(cors({ origin: true, credentials: true }));
 app.use(express.json());
 
 app.get('/api/health', (_req, res) => res.json({ ok: true }));
-
+app.get('/', (req, res) => res.json({ message: 'Vibrant LMS API is running!', status: 'success' }));
 app.use('/api', authRoutes);
 app.use('/api', maintenanceRoutes);
 app.use('/api', testResultsRoutes);
